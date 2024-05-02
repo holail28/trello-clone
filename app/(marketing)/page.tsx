@@ -47,7 +47,7 @@ const MarketingPage = () => {
                 "text-sm md:text-xl text-neutral-400 mt-4 max-w-xs md:max-w-2xl text-center mx-auto",
                 textFont.className
             )}>
-                Collaborez, gérez des projets et atteignez de nouveaux sommets de productivité. Des gratte-ciel au bureau à domicile, la façon dont votre équipe travaille est unique - accomplissez tout cela avec Taskify.
+                Collaborez, gérez des projets et atteignez de nouveaux sommets de productivité. Des gratte-ciels aux bureaux à domicile, la façon dont votre équipe travaille est unique - accomplissez tout cela avec Taskify.
             </div>
             <Button className="mt-6" size="lg" asChild>
                 <Link href="/sign-up">
