@@ -11,13 +11,13 @@ const isPublicRoute = createRouteMatcher([
     "/sign-up",
 ])
 
-export default clerkMiddleware((auth, req) => {    
+export default clerkMiddleware((auth, req) => {
     if (!isPublicRoute(req)) auth().protect();
 
-    if(auth().userId && isPublicRoute(req)) {
+    if (auth().userId && isPublicRoute(req)) {
         let path = "/select-org";
 
-        if(auth().orgId) {
+        if (auth().orgId) {
             path = `/organization/${auth().orgId}`;
         }
 
@@ -25,7 +25,11 @@ export default clerkMiddleware((auth, req) => {
         return NextResponse.redirect(orgSelection);
     }
 
-    if(!auth().userId && !auth().orgId && req.nextUrl.pathname !== "/select-org") {
+    if (!auth().userId && !isPublicRoute(req)) {
+        return NextResponse.redirect("/sign-in");
+    }
+
+    if (auth().userId && !auth().orgId && req.nextUrl.pathname !== "/select-org") {
         const orgSelection = new URL("select-org", req.url);
         return NextResponse.redirect(orgSelection);
     }
