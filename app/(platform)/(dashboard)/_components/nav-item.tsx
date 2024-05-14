@@ -40,22 +40,22 @@ export const NavItem = ({
 
     const routes = [
         {
-            label: "Boards",
+            label: "Tableaux",
             icon: <Layout className="h-4 w-4 mr-2" />,
             href: `/organization/${organization.id}`
         },
         {
-            label: "Activity",
+            label: "Activité",
             icon: <Activity className="h-4 w-4 mr-2" />,
             href: `/organization/${organization.id}/activity`
         },
         {
-            label: "Settings",
+            label: "Paramètres",
             icon: <Settings className="h-4 w-4 mr-2" />,
             href: `/organization/${organization.id}/settings`
         },
         {
-            label: "Billing",
+            label: "Facturation",
             icon: <CreditCard className="h-4 w-4 mr-2" />,
             href: `/organization/${organization.id}/billing`
         }

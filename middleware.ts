@@ -1,4 +1,3 @@
-import { RedirectToSignIn } from '@clerk/nextjs';
 import {
     clerkMiddleware,
     createRouteMatcher
