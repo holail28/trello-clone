@@ -10,22 +10,42 @@ import { InpuType, ReturnType } from "./types"
 import { CreateBoard } from "./schema";
 
 const handler = async (data: InpuType): Promise<ReturnType> => {
-    const { userId } = auth();
+    const { userId, orgId } = auth();
 
-    if (!userId) {
+    if (!userId || !orgId) {
         return {
             error: "Non autorisé"
         }
     }
 
-    const { title } = data;
+    const { title, image } = data;
+
+    const [
+        imageId,
+        imageThumbUrl,
+        imageFullUrl,
+        imageLinkHTML,
+        imageUserName
+    ] = image.split("|");    
+
+    if(!imageId || !imageThumbUrl || !imageFullUrl || !imageLinkHTML || !imageUserName) {
+        return {
+            error: "Information sur l'image manquante. Échec de la création du tableau."
+        }
+    }
 
     let board;
 
     try {
         board = await db.board.create({
             data: {
-                title
+                title,
+                orgId,
+                imageId,
+                imageThumbUrl,
+                imageFullUrl,
+                imageUserName,
+                imageLinkHTML,
             }
         })
     } catch (e) {
