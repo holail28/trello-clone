@@ -1,8 +1,27 @@
-import { FormPopover } from "@/components/form/form-popover"
-import { Hint } from "@/components/hint"
+import { auth } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
+import Link from "next/link"
 import { HelpCircle, User2 } from "lucide-react"
 
-export const BoardList = () => {
+import { db } from "@/lib/db"
+import { Hint } from "@/components/hint"
+import { FormPopover } from "@/components/form/form-popover"
+import { Skeleton } from "@/components/ui/skeleton"
+
+export const BoardList = async () => {
+    const { orgId } = auth();
+
+    if (!orgId) return redirect("/select-org");
+
+    const boards = await db.board.findMany({
+        where: {
+            orgId
+        },
+        orderBy: {
+            createdAt: "desc"
+        }
+    });
+
     return (
         <div className="space-y-4">
             <div className="flex items-center font-semibold text-lg text-neutral-700">
@@ -10,6 +29,20 @@ export const BoardList = () => {
                 Vos tableaux
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                {boards.map((board) => (
+                    <Link
+                        key={board.id}
+                        href={`/board/${board.id}`}
+                        className="group relative aspect-video bg-no-repeat bg-center bg-cover bg-sky-700 rounded-sm h-full w-full p-2 overflow-hidden"
+                        style={{ backgroundImage: `url(${board.imageThumbUrl})` }}
+                    >
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition p-2">
+                            <p className="relative font-semibold text-white">
+                                {board.title}
+                            </p>
+                        </div>
+                    </Link>
+                ))}
                 <FormPopover
                     side="right"
                     sideOffset={10}
@@ -32,6 +65,29 @@ export const BoardList = () => {
                         </Hint>
                     </div>
                 </FormPopover>
+            </div>
+        </div>
+    )
+}
+
+BoardList.Skeleton = function SkeletonBoardList() {
+    return (
+
+        <div className="space-y-4">
+            <div className="flex items-center font-semibold text-lg text-neutral-700">
+                <Skeleton className="h-6 w-6 mr-2" />
+                <Skeleton className="h-6 w-[125px]" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
+                <Skeleton className="aspect-video h-full w-full p-2" />
             </div>
         </div>
     )
