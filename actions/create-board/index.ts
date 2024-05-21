@@ -6,10 +6,10 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { createSafeAction } from "@/lib/create-safe-action";
 
-import { InpuType, ReturnType } from "./types"
+import { InputType, ReturnType } from "./types"
 import { CreateBoard } from "./schema";
 
-const handler = async (data: InpuType): Promise<ReturnType> => {
+const handler = async (data: InputType): Promise<ReturnType> => {
     const { userId, orgId } = auth();
 
     if (!userId || !orgId) {
