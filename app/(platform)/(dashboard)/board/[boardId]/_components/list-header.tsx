@@ -9,6 +9,7 @@ import { useEventListener } from "usehooks-ts";
 import { useAction } from "@/hooks/use-actions";
 import { updateList } from "@/actions/update-list";
 import { FormInput } from "@/components/form/form-input";
+import { ListOptions } from "./list-options";
 
 interface ListHeaderProps {
     data: List;
@@ -38,7 +39,7 @@ export const ListHeader = ({
 
     const { execute } = useAction(updateList, {
         onSuccess: (data) => {
-            toast.success(`Renommé en "${data.title}"`);
+            toast.success(`Liste renommée en "${data.title}".`);
             setTitle(data.title);
             disableEditing();
         },
@@ -100,6 +101,10 @@ export const ListHeader = ({
                     {title}
                 </div>
             )}
+            <ListOptions
+                onAddCard={() => {  }}
+                data={data}
+            />
         </div>
     )
 }
