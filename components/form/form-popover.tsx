@@ -55,7 +55,7 @@ export const FormPopover = ({
 
     return (
         <Popover>
-            <PopoverTrigger>
+            <PopoverTrigger asChild>
                 {children}
             </PopoverTrigger>
             <PopoverContent
