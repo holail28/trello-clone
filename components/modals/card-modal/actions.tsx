@@ -78,7 +78,7 @@ export const Actions = ({
                 className="w-full justify-start"
                 size="inline"
             >
-                <Copy className="h-2.5 w-2.5 mr-2" />
+                <Copy className="h-4 w-4 mr-2" />
                 Copier
             </Button>
             <Button
@@ -88,7 +88,7 @@ export const Actions = ({
                 className="w-full justify-start"
                 size="inline"
             >
-                <Trash className="h-2.5 w-2.5 mr-2" />
+                <Trash className="h-4 w-4 mr-2" />
                 Supprimer
             </Button>
         </div>
