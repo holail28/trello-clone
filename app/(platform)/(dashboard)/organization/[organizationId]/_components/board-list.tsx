@@ -1,12 +1,15 @@
+import Link from "next/link"
 import { auth } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
-import Link from "next/link"
 import { HelpCircle, User2 } from "lucide-react"
 
 import { db } from "@/lib/db"
 import { Hint } from "@/components/hint"
-import { FormPopover } from "@/components/form/form-popover"
 import { Skeleton } from "@/components/ui/skeleton"
+import { FormPopover } from "@/components/form/form-popover"
+import { MAX_FREE_BOARDS } from "@/constants/boards"
+import { getAvailableCount } from "@/lib/org-limit"
+import { checkSubscription } from "@/lib/subscription"
 
 export const BoardList = async () => {
     const { orgId } = auth();
@@ -21,6 +24,9 @@ export const BoardList = async () => {
             createdAt: "desc"
         }
     });
+
+    const availableCount = await getAvailableCount();
+    const isPro = await checkSubscription();
 
     return (
         <div className="space-y-4">
@@ -53,7 +59,7 @@ export const BoardList = async () => {
                     >
                         <p className="text-sm">Créer un nouveau tableau</p>
                         <span className="text-xs">
-                            5 restants
+                            { isPro ? "Illimité" : `${MAX_FREE_BOARDS - availableCount} restants`}
                         </span>
                         <Hint
                             sideOffset={40}

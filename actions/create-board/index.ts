@@ -2,14 +2,19 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
-import { ACTION, ENTITY_TYPE } from "@prisma/client";
 
 import { db } from "@/lib/db";
-import { createAuditLog } from "@/lib/create-audit-log";
 import { createSafeAction } from "@/lib/create-safe-action";
 
 import { InputType, ReturnType } from "./types"
 import { CreateBoard } from "./schema";
+import { createAuditLog } from "@/lib/create-audit-log";
+import { ACTION, ENTITY_TYPE } from "@prisma/client";
+import {
+    incrementAvailableCount,
+    hasAvailableCount
+} from "@/lib/org-limit";
+import { checkSubscription } from "@/lib/subscription";
 
 const handler = async (data: InputType): Promise<ReturnType> => {
     const { userId, orgId } = auth();
@@ -17,6 +22,15 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     if (!userId || !orgId) {
         return {
             error: "Non autorisé"
+        }
+    }
+
+    const canCreate = await hasAvailableCount();
+    const isPro = await checkSubscription();
+
+    if (!canCreate && !isPro) {
+        return {
+            error: "Vous avez atteint la limite de tableaux gratuits. Veuillez mettre à niveau votre abonnement pour créer plus de tableaux."
         }
     }
 
@@ -28,9 +42,9 @@ const handler = async (data: InputType): Promise<ReturnType> => {
         imageFullUrl,
         imageLinkHTML,
         imageUserName
-    ] = image.split("|");    
+    ] = image.split("|");
 
-    if(!imageId || !imageThumbUrl || !imageFullUrl || !imageLinkHTML || !imageUserName) {
+    if (!imageId || !imageThumbUrl || !imageFullUrl || !imageLinkHTML || !imageUserName) {
         return {
             error: "Information sur l'image manquante. Échec de la création du tableau."
         }
@@ -50,6 +64,10 @@ const handler = async (data: InputType): Promise<ReturnType> => {
                 imageLinkHTML,
             }
         })
+
+        if (!isPro) {
+            await incrementAvailableCount();
+        }
 
         await createAuditLog({
             entityTitle: board.title,
